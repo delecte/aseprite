@@ -44,6 +44,15 @@ jobs:
         skia_file=$(basename $skia_url)
         curl --ssl-revoke-best-effort -L -o "$skia_file" "$skia_url"
         unzip "$skia_file" -d skia
+        
+    - name: Download OpenSSL static libs
+      run: |
+        curl -L -o openssl.zip https://slproweb.com/download/Win64OpenSSL-3_3_0.zip
+          unzip openssl.zip -d C:\openssl
+      shell: bash
+    - name: Configure CMake
+      run: cmake -B build -DOPENSSL_ROOT_DIR=C:\openssl -DOPENSSL_USE_STATIC_LIBS=ON
+        
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
       if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
